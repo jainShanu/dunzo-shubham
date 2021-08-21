@@ -7,5 +7,6 @@ public interface IndicatorService {
     public void markIndicatorAsSufficient(String ingredient);
     public String indicateCritcial();
     public String indicateEmpty();
+    public void resetIndicators();
 
 }

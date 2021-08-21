@@ -25,7 +25,7 @@ public class ContainerManager {
      */
     //
     private static final Containers containers = new Containers();
-    private static IndicatorService indicator;
+//    private static IndicatorService indicator;
 
     public static void addToContainer(String name, Integer quantity){
         containers.addToContainer(name, quantity);

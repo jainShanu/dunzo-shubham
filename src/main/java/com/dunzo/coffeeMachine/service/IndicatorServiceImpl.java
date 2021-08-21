@@ -16,15 +16,19 @@ public class IndicatorServiceImpl implements IndicatorService{
     public String toString(){
         return indicators.toString();
     }
+
     // private indicator class defined as singleton(only initialized once) ->
     // access to indicators is only accessed to public function
     private static class Indicator{
         private Map<INDICATOR_STATUS, List<String>> indicator;
         private Indicator(){
-            indicator = new HashMap<INDICATOR_STATUS, List<String>>();
-            indicator.put(INDICATOR_STATUS.EMPTY, new ArrayList<String>());
-            indicator.put(INDICATOR_STATUS.CRITICAL, new ArrayList<String>());
-            indicator.put(INDICATOR_STATUS.SUFFICIENT, new ArrayList<String>());
+            indicator = new HashMap<>();
+            indicator.put(INDICATOR_STATUS.EMPTY, new ArrayList<>());
+            indicator.put(INDICATOR_STATUS.CRITICAL, new ArrayList<>());
+        }
+
+        public void reset(){
+            indicator.clear();
         }
     }
 
@@ -43,14 +47,12 @@ public class IndicatorServiceImpl implements IndicatorService{
     @Override
     public void markIndicatorAsSufficient(String ingredient) {
         if (indicators.indicator.getOrDefault(INDICATOR_STATUS.EMPTY,
-                new ArrayList<String>()).contains(ingredient))
+                new ArrayList<>()).contains(ingredient))
             indicators.indicator.get(INDICATOR_STATUS.EMPTY).remove(ingredient);
 
         if (indicators.indicator.getOrDefault(INDICATOR_STATUS.CRITICAL,
-                new ArrayList<String>()).contains(ingredient))
+                new ArrayList<>()).contains(ingredient))
             indicators.indicator.get(INDICATOR_STATUS.EMPTY).remove(ingredient);
-
-        indicators.indicator.get(INDICATOR_STATUS.SUFFICIENT).add(ingredient);
     }
 
     @Override
@@ -63,4 +65,8 @@ public class IndicatorServiceImpl implements IndicatorService{
         return indicators.indicator.get(INDICATOR_STATUS.EMPTY).toString();
     }
 
+    @Override
+    public void resetIndicators(){
+        indicators.reset();
+    }
 }

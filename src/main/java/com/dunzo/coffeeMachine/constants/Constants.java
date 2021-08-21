@@ -7,7 +7,7 @@ public class Constants {
         UNAVAILABLE, INSUFFICIENT, AVAILABLE;
     }
     public enum INDICATOR_STATUS{
-        EMPTY, CRITICAL, SUFFICIENT;
+        EMPTY, CRITICAL;
     }
     public final static Integer MAX_REQUEST = 1000;
 

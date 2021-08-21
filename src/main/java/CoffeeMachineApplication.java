@@ -1,7 +1,5 @@
 import com.dunzo.coffeeMachine.controller.CoffeeMachineRunner;
 
-import com.dunzo.coffeeMachine.service.IndicatorService;
-import com.dunzo.coffeeMachine.service.IndicatorServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,19 +20,18 @@ public class CoffeeMachineApplication {
             processed further
             6. refill and continue running machine
         * */
-//        File file = new File(CoffeeMachine.class.getClassLoader().getResource(args[0]).getFile());
-//        String jsonInput = FileUtils.readFileToString(file, "UTF-8");
-//        CoffeeMachine coffeeMachine = CoffeeMachine.getInstance(jsonInput);
-//        coffeeMachine.process();
+
         if (args.length < 1)
             logger.error("Test file name to run must be passed.");
         File file = new File(CoffeeMachineRunner.class.getClassLoader().getResource(args[0]).getFile());
         String jsonInput = FileUtils.readFileToString(file, "UTF-8");
         CoffeeMachineRunner coffeeMachineRunner = CoffeeMachineRunner.getInstance(jsonInput);
 //        System.out.println(coffeeMachineRunner.getMachine().toString());
-        IndicatorService indicator1 = new IndicatorServiceImpl();
-        System.out.println(indicator1);
-        IndicatorService indicator2 = new IndicatorServiceImpl();
-        System.out.println(indicator2);
+        coffeeMachineRunner.setupMachine();
+        String indicatorO = coffeeMachineRunner.runMachine();
+        System.out.println(indicatorO);
+
+        coffeeMachineRunner.resetMachine();
+        coffeeMachineRunner.refill();
     }
 }
