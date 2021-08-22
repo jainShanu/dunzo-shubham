@@ -9,6 +9,6 @@ public class Constants {
     public enum INDICATOR_STATUS{
         EMPTY, CRITICAL;
     }
-    public final static Integer MAX_REQUEST = 1000;
+    public final static Integer MAX_REQUEST = 10;
 
 }

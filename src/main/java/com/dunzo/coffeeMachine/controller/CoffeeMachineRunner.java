@@ -9,20 +9,24 @@ import com.dunzo.coffeeMachine.service.BeverageDispatcher;
 import com.dunzo.coffeeMachine.service.IndicatorService;
 import com.dunzo.coffeeMachine.service.IndicatorServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import lombok.Getter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.*;
 
-//check how to define constants
 import static com.dunzo.coffeeMachine.constants.Constants.MAX_REQUEST;
 
+/**
+ * CoffeeMachineRunner defined as central controller to setup and run machine.
+ * Defined as singleton.
+ */
 @Getter
+@Slf4j
 public class CoffeeMachineRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(CoffeeMachineRunner.class);
     private static final Integer MAX_QUEUED_REQUEST = MAX_REQUEST;
     public static CoffeeMachineRunner coffeeMachineRunner;
     private final Machine machine;
@@ -48,21 +52,24 @@ public class CoffeeMachineRunner {
         executor.setRejectedExecutionHandler(handler);
     }
 
-    /*
-        setting up machine -> adding all beverages to beverage
+    /**
+     * setting up machine -> updating containers with the provided content through
+     * static addContainer method of Container Manager
     */
     public void setupMachine(){
         machine.getAllIngredients().forEach(ContainerManager::addToContainer);
     }
 
-    public String runMachine(){
-        while (!indicator.indicateEmpty().isEmpty()) {
-            machine.getMenu().forEach((name, ingredients_map) -> {
-                Beverage beverage = new Beverage(name, ingredients_map);
-                BeverageDispatcher dispatcher = new BeverageDispatcher(beverage);
-                this.process(dispatcher);
-            });
-        }
+    /**
+     * run machine adds runnable beverage dispatcher task for each item in menu
+     * returns: indicators empty status, i.e., list of ingredients that got finished after running machine
+     */
+    public List<String> runMachine(){
+        machine.getMenu().forEach((name, ingredients_map) -> {
+            Beverage beverage = new Beverage(name, ingredients_map);
+            BeverageDispatcher dispatcher = new BeverageDispatcher(beverage);
+            this.process(dispatcher);
+        });
         return indicator.indicateEmpty();
     }
 
@@ -70,18 +77,27 @@ public class CoffeeMachineRunner {
         executor.execute(dispatcher);
     }
 
+    /**
+     * stop machine method to quit all executor tasks queued.
+     */
     public void stopMachine(){
         executor.shutdown();
     }
 
+    /**
+     * stops all the dispatcher tasks
+     * resets indicators and containers items quantity
+     */
     public void resetMachine(){
-        System.out.println("Thanks for resetting, even I need some time to rest...pheww!!!");
+        log.info("Thanks for resetting, even I need some time to rest...pheww!!!");
         this.stopMachine();
         ContainerManager.resetContainers();
         indicator.resetIndicators();
     }
 
-
+    /**
+     * Refill method defined for demo purpose -> updates the containers with the initial ingredients quantity
+     */
     public void refill() {
         System.out.println("Refilling the machine, kindly wait.");
         this.setupMachine();

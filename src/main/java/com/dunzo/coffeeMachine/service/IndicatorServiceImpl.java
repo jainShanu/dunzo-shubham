@@ -1,27 +1,27 @@
 package com.dunzo.coffeeMachine.service;
 
 import com.dunzo.coffeeMachine.constants.Constants.INDICATOR_STATUS;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * indicator service has real-time indicators to indicate ingredients low or empty status
+ * map of indicator_status and list of ingredients defined inside Indicator Class, updated through external interface,
+ * markIndicatorAsEmpty, markIndicatorAsLow by dispatcher method
+ *
+ * Inner class defined as static and private, to allow only outer class methods to access, with same instance of
+ * Indicator while accessing through any class.
+ *
+ */
 public class IndicatorServiceImpl implements IndicatorService{
     private static final Indicator indicators = new Indicator();
-//    private static IndicatorService instance;
 
-    @Override
-    public String toString(){
-        return indicators.toString();
-    }
-
-    // private indicator class defined as singleton(only initialized once) ->
-    // access to indicators is only accessed to public function
     private static class Indicator{
-        private Map<INDICATOR_STATUS, List<String>> indicator;
-        private Indicator(){
+        private static Map<INDICATOR_STATUS, List<String>> indicator;
+        public Indicator(){
             indicator = new HashMap<>();
             indicator.put(INDICATOR_STATUS.EMPTY, new ArrayList<>());
             indicator.put(INDICATOR_STATUS.CRITICAL, new ArrayList<>());
@@ -56,17 +56,22 @@ public class IndicatorServiceImpl implements IndicatorService{
     }
 
     @Override
-    public String indicateCritcial() {
-        return indicators.indicator.get(INDICATOR_STATUS.CRITICAL).toString();
+    public List<String> indicateCritical() {
+        return indicators.indicator.get(INDICATOR_STATUS.CRITICAL);
     }
 
     @Override
-    public String indicateEmpty() {
-        return indicators.indicator.get(INDICATOR_STATUS.EMPTY).toString();
+    public List<String> indicateEmpty() {
+        return indicators.indicator.get(INDICATOR_STATUS.EMPTY);
     }
 
     @Override
     public void resetIndicators(){
         indicators.reset();
+    }
+
+    @Override
+    public String toString(){
+        return indicators.toString();
     }
 }

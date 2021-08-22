@@ -1,17 +1,17 @@
 import com.dunzo.coffeeMachine.controller.CoffeeMachineRunner;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+@Slf4j
 public class CoffeeMachineApplication {
-    private static final Logger logger = LoggerFactory.getLogger(CoffeeMachineApplication.class);
 
-    public static void main(String []args) throws IOException {
-        /* read file name from the input.
+    public static void main(String []args) throws IOException, InterruptedException {
+        /*
             1. create file object from resources location.
             2. read and load the file content
             3. using object mapper -> create model pojo
@@ -22,16 +22,19 @@ public class CoffeeMachineApplication {
         * */
 
         if (args.length < 1)
-            logger.error("Test file name to run must be passed.");
+            log.error("Test file name to run must be passed.");
         File file = new File(CoffeeMachineRunner.class.getClassLoader().getResource(args[0]).getFile());
         String jsonInput = FileUtils.readFileToString(file, "UTF-8");
         CoffeeMachineRunner coffeeMachineRunner = CoffeeMachineRunner.getInstance(jsonInput);
-//        System.out.println(coffeeMachineRunner.getMachine().toString());
         coffeeMachineRunner.setupMachine();
-        String indicatorO = coffeeMachineRunner.runMachine();
-        System.out.println(indicatorO);
 
-        coffeeMachineRunner.resetMachine();
-        coffeeMachineRunner.refill();
+        List<String> indicatorO = coffeeMachineRunner.runMachine();
+
+        if (!indicatorO.isEmpty()) {
+            log.info("Indicator Status: {}", indicatorO);
+            coffeeMachineRunner.resetMachine();
+            coffeeMachineRunner.refill();
+        }
+        coffeeMachineRunner.stopMachine();
     }
 }
