@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Beverage dispatcher implemented as runnable task. Run inside each thread. Dispatches beverages and update the
+ * indicator status if any ingredient is insufficient or unavailable.
+ */
 @Slf4j
 public class BeverageDispatcher implements Runnable{
     private Beverage beverage;
@@ -20,7 +23,9 @@ public class BeverageDispatcher implements Runnable{
 
     /**
      * processes and then dispatch beverage
-     * Each beverage dispatcher tasks added to thread
+     * checks each ingredients and updates the container amount-> returned ingredientAvailability status is passed to
+     * dispatch method which dispatches beverage depending on availability status-> if not available
+     * update the indicator.
      */
     @Override
     public void run() {

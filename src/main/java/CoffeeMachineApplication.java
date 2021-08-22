@@ -20,21 +20,25 @@ public class CoffeeMachineApplication {
             processed further
             6. refill and continue running machine
         * */
+        try{
+            if (args.length < 1)
+                log.error("Test file name to run must be passed.");
+            File file = new File(CoffeeMachineRunner.class.getClassLoader().getResource(args[0]).getFile());
+            String jsonInput = FileUtils.readFileToString(file, "UTF-8");
+            CoffeeMachineRunner coffeeMachineRunner = CoffeeMachineRunner.getInstance(jsonInput);
+            coffeeMachineRunner.setupMachine();
 
-        if (args.length < 1)
-            log.error("Test file name to run must be passed.");
-        File file = new File(CoffeeMachineRunner.class.getClassLoader().getResource(args[0]).getFile());
-        String jsonInput = FileUtils.readFileToString(file, "UTF-8");
-        CoffeeMachineRunner coffeeMachineRunner = CoffeeMachineRunner.getInstance(jsonInput);
-        coffeeMachineRunner.setupMachine();
+            List<String> indicatorO = coffeeMachineRunner.runMachine();
 
-        List<String> indicatorO = coffeeMachineRunner.runMachine();
-
-        if (!indicatorO.isEmpty()) {
-            log.info("Indicator Status: {}", indicatorO);
-            coffeeMachineRunner.resetMachine();
-            coffeeMachineRunner.refill();
+            if (!indicatorO.isEmpty()) {
+                log.info("Indicator Status: {}", indicatorO);
+                coffeeMachineRunner.resetMachine();
+                coffeeMachineRunner.refill();
+            }
+            coffeeMachineRunner.stopMachine();
+        } catch (Exception e) {
+            System.out.println(String.format("Exception occurred while running %s", e.toString()));
+            System.exit(1);
         }
-        coffeeMachineRunner.stopMachine();
     }
 }

@@ -8,6 +8,7 @@ import com.dunzo.coffeeMachine.service.BeverageDispatcher;
 
 import com.dunzo.coffeeMachine.service.IndicatorService;
 import com.dunzo.coffeeMachine.service.IndicatorServiceImpl;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 

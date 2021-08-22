@@ -28,7 +28,6 @@ public class ContainerManager {
     /**
      * checks containers for each ingredient and add it to the list of ingredients stored against, availability status key
      * update containers amount if all available status.
-     * <p>
      * returns: indicatorStatusMap
      */
     public synchronized static Map<AVAILABILITY_STATUS, List<String>> checkAndUpdateContainer(Beverage beverage) {
